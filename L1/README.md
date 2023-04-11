@@ -1,6 +1,8 @@
 ### Первая сессия
 postgres=# \set AUTOCOMMIT off
-postgres=#  create table persons(id serial, first_name text, second_name text); insert into persons(first_name, second_name) values('ivan', 'ivanov'); insert into persons(first_name, second_name) values('petr', 'petrov'); commit;
+postgres=#  create table persons(id serial, first_name text, second_name text); 
+insert into persons(first_name, second_name) values('ivan', 'ivanov'); 
+insert into persons(first_name, second_name) values('petr', 'petrov'); commit;
 CREATE TABLE
 INSERT 0 1
 INSERT 0 1
@@ -23,7 +25,8 @@ postgres=#  select * from persons;
   1 | ivan       | ivanov
   2 | petr       | petrov
 (2 rows)
-## новой строчки не увидел, так как уровень изоляции READ COMMITED, грязное чтение (неподтвержденные транзакции) недопускается. а в первой сессии транзакция не подтверждена.
+## новой строчки не увидел, так как уровень изоляции READ COMMITED, грязное чтение (неподтвержденные транзакции) недопускается.
+##а в первой сессии транзакция не подтверждена.
 
 
 ### Первая сессия
@@ -57,7 +60,8 @@ postgres=* #  select * from persons;
   2 | petr       | petrov
   3 | sergey     | sergeev
 (3 rows)
-## новой строчки не увидел, так как уровень изоляции REPEATABLE READ, грязное чтение (неподтвержденные транзакции) недопускаются.  в первой сессии транзакция не подтверждена. также данные изменённые другими транзакциями не видны в текущей транзакции. 
+## новой строчки не увидел, так как уровень изоляции REPEATABLE READ, грязное чтение (неподтвержденные транзакции) недопускаются.  
+## в первой сессии транзакция не подтверждена. также данные изменённые другими транзакциями не видны в текущей транзакции. 
 
 
 ### Первая сессия
@@ -71,7 +75,8 @@ postgres=* #  select * from persons;
   2 | petr       | petrov
   3 | sergey     | sergeev
 (3 rows)
-## новой строчки не увидел, так как уровень изоляции REPEATABLE READ, запрос видит срез данных на момент начала первого оператора в транзакции. данные изменённые другими транзакциями не видны в текущей транзакции.
+## новой строчки не увидел, так как уровень изоляции REPEATABLE READ, запрос видит срез данных на момент начала первого оператора в транзакции. 
+## данные изменённые другими транзакциями не видны в текущей транзакции.
 
 ### Вторая сессия
 postgres=* # commit;
