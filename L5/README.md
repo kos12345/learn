@@ -19,4 +19,17 @@ BEGIN
 end;  
 $$;  
 
-CALL upd_table();  
+Вывод результата в psql:  
+
+NOTICE:  step: 1  
+NOTICE:  step: 2  
+NOTICE:  step: 3  
+NOTICE:  step: 4  
+NOTICE:  step: 5  
+NOTICE:  step: 6  
+NOTICE:  step: 7  
+NOTICE:  step: 8  
+NOTICE:  step: 9  
+NOTICE:  step: 10  
+DO  
+
