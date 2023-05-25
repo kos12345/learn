@@ -38,7 +38,7 @@ pg_restore -d test2 -n test -t table2 -Fd /var/lib/pgsql/backups/backup1
 
 2. вариант
 pg_restore -l -Fd /var/lib/pgsql/backups/backup1 > /var/lib/pgsql/backups/list --подготавливаем список существующих объектов в бэкапе.  
-vi /var/lib/pgsql/backups/list --редактируем список для восстановления. оставляем только схему test и таблицу table2.
+vi /var/lib/pgsql/backups/list --редактируем список для восстановления. оставляем только схему test и таблицу table2.  
 pg_restore -d test2 -Fd /var/lib/pgsql/backups/backup1 -L /var/lib/pgsql/backups/list --восстанавливаем  
 
 postgres=# \c test2  
