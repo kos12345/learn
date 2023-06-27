@@ -10,3 +10,4 @@
 8. [ДЗ8](https://github.com/kos12345/learn/blob/main/L8/README.md)
 9. [ДЗ9](https://github.com/kos12345/learn/blob/main/L9/README.md)
 10. [ДЗ10](https://github.com/kos12345/learn/blob/main/L10/README.md)
+11. [ДЗ11](https://github.com/kos12345/learn/blob/main/L11/README.md)
