@@ -1,0 +1,41 @@
+настройка pg_probackup
+
+mkdir /var/lib/pgsql/probackup
+chown postgres:postgres /var/lib/pgsql/probackup
+sudo su - postgres 
+
+echo "BACKUP_PATH=/var/lib/pgsql/probackup">>~/.bash_profile
+echo "export BACKUP_PATH">>~/.bash_profile
+echo "alias pg_probackup='pg_probackup-15'">>~/.bash_profile
+. .bash_profile
+pg_probackup init 
+
+mkdir /var/lib/pgsql/probackup/log
+
+pg_probackup add-instance --instance pgcluster --remote-host=10.10.1.2 --remote-user=postgres -D /var/lib/pgsql/14/data/
+pg_probackup set-config --instance pgcluster --retention-redundancy=3 --retention-window=14 --log-filename=backup_cron.log 
+pg_probackup set-config --instance pgcluster --log-level-file=log --log-directory=/var/lib/pgsql/probackup/log --wal-depth=3
+
+
+скрипт для выполнения бэкапов. если запускать его без аргумента то он в зависимости от дня месяца делает или полный или дифф бэкап.
+если передать аргумент FULL/DELTA то он выполняет соответствующий бэкап
+
+
+vi /var/lib/pgsql/probackup/backup.sh 
+#! /bin/sh
+. /var/lib/pgsql/.bash_profile
+instance=pgcluster
+date=$(date +%d)
+mode="DELTA"
+
+if [ -z "$1" ];
+then
+if [ $((10#$date % 5)) -eq 0 ];
+then
+ mode="FULL"
+fi;
+else
+  mode=$1
+fi
+
+pg_probackup backup --instance=$instance -j 2 -b $mode --compress --stream --delete-expired --delete-wal

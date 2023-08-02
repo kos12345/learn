@@ -1,0 +1,4 @@
+recovery_target_timeline = 'latest'
+recovery_min_apply_delay = '1440min'
+restore_command = 'pg_probackup-15 archive-get -B /var/lib/pgsql/probackup --instance=pgcluster --wal-file-path=%p --wal-file-name=%f'
+standby_mode = 'on'

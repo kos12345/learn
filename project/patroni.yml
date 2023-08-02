@@ -1,0 +1,115 @@
+scope: patroni
+namespace: /service/
+name: server1
+
+restapi:
+  listen: 0.0.0.0:8008
+  connect_address: 10.10.1.1:8008
+  certfile: 
+  keyfile: 
+  authentication:
+   username: admin
+   password: admin
+
+log:
+  dir: /var/log/patroni
+  file_size: 100000000
+
+consul:
+  host: 127.0.0.1:8500
+  port: 8500
+  scheme: http
+  checks: []
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    master_start_timeout: 300
+    synchronous_mode: True
+    postgresql:
+      use_pg_rewind: True
+      use_slots: True
+      parameters:
+        max_connections: 1000
+        max_locks_per_transaction: 64
+        max_worker_processes: 8
+        max_prepared_transactions: 0
+        max_parallel_workers_per_gather: 4
+        wal_level: 'replica'
+        wal_buffers: 16MB
+        wal_log_hints: 'on'
+        track_commit_timestamp: 'off'
+        min_wal_size: 1GB
+        max_wal_size: 2GB
+        max_wal_senders: 15
+        max_replication_slots: 15
+        wal_keep_segments: 8
+        hot_standby: 'on'
+        synchronous_commit: 'on'
+        synchronous_standby_names: '*'
+        synchronous_commit: 'remote_write'
+        archive_mode: 'on'
+        archive_timeout: 1800s
+        archive_command: 'pg_probackup-15 archive-push -B /var/lib/pgsql/probackup --instance=pgcluster
+      --wal-file-path=%p --wal-file-name=%f --remote-host=10.10.1.4 --remote-user=postgres
+      --compress --overwrite'
+        shared_buffers: 8GB
+        effective_cache_size: 24GB
+        maintenance_work_mem: 2GB
+        checkpoint_completion_target: 0.7
+        default_statistics_target: 100
+        random_page_cost: 1.1
+        effective_io_concurrency: 200
+        work_mem: 2097kB
+      recovery_conf:
+        restore_command: 'pg_probackup-15 archive-get -B /var/lib/pgsql/probackup --instance=pgcluster
+      --remote-host=10.10.1.4 --wal-file-path=%p --wal-file-name=%f --remote-user=postgres'
+
+  initdb: # Note: It needs to be a list (some options need values, others are switches)
+    - encoding: UTF8
+    - data-checksums
+
+  pg_hba:  # Add following lines to pg_hba.conf after running 'initdb'
+    - host all all 0.0.0.0/0 md5
+    - host replication replicator 0.0.0.0/0 md5
+
+  # Some additional users users which needs to be created after initializing new cluster
+  users:
+    postgres:
+      password: postgres
+    replicator:
+      password: replicator
+      options:
+        - replication
+
+
+postgresql:
+  authentication:
+    superuser:
+      username: postgres
+      password: postgres
+    replication:
+      username: replicator
+      password: replicator
+  callbacks:
+  connect_address: 10.10.1.1:5432
+  data_dir: /var/lib/pgsql/15/data
+  config_dir: /var/lib/pgsql/15/data
+  bin_dir: /usr/pgsql-15/bin
+  listen: 0.0.0.0:5432
+  use_unix_socket: False
+  pgpass: /var/lib/pgsql/.pgpass
+  parameters:
+    unix_socket_directories: '/var/run/postgresql'
+  pg_ctl_timeout: 60
+    
+
+tags:
+    nofailover: false
+    noloadbalance: false
+    clonefrom: false
+    nosync: false
+

@@ -1,0 +1,21 @@
+{
+    "bootstrap_expect": 2,
+    "client_addr": "0.0.0.0",
+    "datacenter": consul_clluster
+    "data_dir": "/var/lib/consul",
+    "domain": "consul_domain",
+    "enable_script_checks": true,
+    "dns_config": {
+        "enable_truncate": true,
+        "only_passing": true
+    },
+    "enable_syslog": true,
+    "encrypt": "sOokmXKJk+oA2asBnGrUgvl3no2FiU6QAdmYf6eU3ys=",
+    "leave_on_terminate": true,
+    "log_level": "INFO",
+    "rejoin_after_leave": true,
+    "server": true,
+    "retry_join": 
+                                                           ["10.10.1.1", "10.10.1.2", "10.20.1.1", "10.20.1.2", "10.30.1.1"],
+    "ui": true
+}

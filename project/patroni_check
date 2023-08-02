@@ -1,0 +1,8 @@
+#!/bin/bash
+ipmy=$(hostname -I | awk '{print $1}');
+result=$(/usr/local/bin/patronictl -c /etc/patroni/patroni.yml  list | grep -i $ipmy | awk '{print $6}');
+if [ $result = "Leader" ]; then
+    echo "OK"
+else
+    exit 1
+fi;
